@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Weather App</h1>
+      <form id="weatherForm" class="weather-form">
+        <input
+          type="text"
+          name="cityName"
+          placeholder="Enter city name"
+          required
+        />
+        <button type="submit">Get Weather</button>
+      </form>
+
+      <!-- Weather results will appear here -->
+      <div id="weatherResult"></div>
+    </div>
+
+    <script>
+      const form = document.getElementById("weatherForm");
+      const resultDiv = document.getElementById("weatherResult");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault(); // prevent page reload
+        const city = form.cityName.value.trim();
+        if (!city) return;
+
+        resultDiv.innerHTML = "<p>Loading...</p>";
+
+        try {
+          const response = await fetch("/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cityName: city }),
+          });
+
+          const data = await response.text(); // server sends HTML snippet
+          resultDiv.innerHTML = data;
+        } catch (err) {
+          resultDiv.innerHTML = "<p>Error fetching weather data.</p>";
+          console.error(err);
+        }
+      });
+    </script>
+  </body>
+</html>
